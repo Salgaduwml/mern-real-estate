@@ -6,6 +6,7 @@ import {
   signInSuccess,
   signInFailure,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
@@ -62,13 +63,14 @@ export default function SignIn() {
             </p>
           </div>
           <form onSubmit={handleSubmit} className="w-full flex flex-col gap-4">
+            <OAuth />
             <input
               type="email"
               id="email"
               required
               placeholder="Email"
               onChange={handleChange}
-              className="px-4 py-3 border border-black/30 rounded w-full placeholder:text-sm"
+              className="px-4 py-2 h-12 border border-black/30 rounded w-full placeholder:text-sm"
             />
             <input
               type="password"
@@ -76,11 +78,11 @@ export default function SignIn() {
               required
               placeholder="Password"
               onChange={handleChange}
-              className="px-4 py-3 border border-black/30 rounded w-full placeholder:text-sm"
+              className="px-4 py-2 h-12 border border-black/30 rounded w-full placeholder:text-sm"
             />
             <button
               disabled={loading}
-              className="bg-[#222] hover:opacity-90 py-3 px-6 rounded-md text-white"
+              className="bg-[#222] hover:opacity-90 py-2 px-6 h-12 rounded-md text-white"
             >
               {loading ? "Signing in" : "Sign in"}
             </button>
