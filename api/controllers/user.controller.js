@@ -28,3 +28,18 @@ export const updateUser = async (req, res, next) => {
     next(error);
   }
 };
+
+export const deleteUser = async (req, res, next) => {
+  const { id } = req.params;
+  if (req.user.id !== id)
+    return next(
+      errorHandler(401, "You do not have access to delete this account!")
+    );
+  try {
+    await User.findByIdAndDelete(id);
+    res.clearCookie("access_token");
+    res.status(200).json("User has been deleted!");
+  } catch (error) {
+    next(error);
+  }
+};
