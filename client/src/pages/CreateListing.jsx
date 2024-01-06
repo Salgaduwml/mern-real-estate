@@ -1,4 +1,78 @@
+import { useState } from "react";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
+
 export default function CreateListing() {
+  const [files, setFiles] = useState([]);
+  const [formData, setFormData] = useState({
+    imageUrls: [],
+  });
+  const [imageUploadError, setImageUploadError] = useState(null);
+  const [uploading, setUploading] = useState(false);
+
+  const handleImageUpload = (e) => {
+    if (files.length > 0 && files.length + formData.imageUrls.length < 7) {
+      setUploading(true);
+      setImageUploadError(false);
+      const promises = [];
+      for (let i = 0; i < files.length; i++) {
+        promises.push(storeImage(files[i]));
+      }
+      Promise.all(promises)
+        .then((urls) => {
+          setFormData({
+            ...formData,
+            imageUrls: formData.imageUrls.concat(urls),
+          });
+          setImageUploadError(false);
+          setUploading(false);
+        })
+        .catch((err) => {
+          setImageUploadError("Image upload failed (2mb max per image)");
+          setUploading(false);
+        });
+    } else {
+      setImageUploadError("You can only upload 6 images per listing");
+      setUploading(false);
+    }
+  };
+
+  const storeImage = async (file) => {
+    return new Promise((resolve, reject) => {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        },
+        (error) => {
+          reject(error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((dowloadUrl) => {
+            resolve(dowloadUrl);
+          });
+        }
+      );
+    });
+  };
+
+  const handleRemoveImage = (index) => {
+    setFormData({
+      ...formData,
+      imageUrls: formData.imageUrls.filter((_, i) => i !== index),
+    });
+  };
+
   return (
     <main>
       <div className="max-w-6xl mx-auto w-full p-4 ">
@@ -112,7 +186,7 @@ export default function CreateListing() {
             <p className="font-semibold text-sm">
               Images:{" "}
               <span className="text-gray-500 font-normal ml-2">
-                The first image will be the cover (max6)
+                The first image will be the cover (max 6)
               </span>
             </p>
             <div className="flex items-center gap-6 mt-4">
@@ -121,12 +195,44 @@ export default function CreateListing() {
                 id="images"
                 accept="image/*"
                 multiple
+                onChange={(e) => setFiles(e.target.files)}
                 className="text-sm p-3 py-2 border border-black/30 rounded w-full"
               />
-              <button className="py-2 px-6 text-green-600 border border-green-600 h-full rounded">
-                Upload
+              <button
+                className="py-2 px-6 text-green-600 border border-green-600 h-full rounded"
+                onClick={handleImageUpload}
+                type="button"
+              >
+                {uploading ? "Uploading..." : "Upload"}
               </button>
             </div>
+            {imageUploadError && (
+              <p className="text-red-500 text-sm mt-3 text-center">
+                {imageUploadError}
+              </p>
+            )}
+            {formData.imageUrls.length > 0 && (
+              <div className="mt-3">
+                {formData.imageUrls.map((url, i) => (
+                  <div
+                    key={i}
+                    className="border flex items-center justify-between p-3"
+                  >
+                    <img
+                      src={url}
+                      className="w-[100px] h-[60px] rounded object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveImage(i)}
+                      className="text-red-500 text-sm font-medium"
+                    >
+                      Delete
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
             <button className="py-2 px-6 w-full bg-blue-500 text-white mt-4 h-12 rounded">
               Create listing
             </button>
