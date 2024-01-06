@@ -19,6 +19,7 @@ import {
   uploadBytesResumable,
 } from "firebase/storage";
 import { app } from "../firebase";
+import { Link } from "react-router-dom";
 
 export default function Profile() {
   const [file, setFile] = useState(undefined);
@@ -185,6 +186,12 @@ export default function Profile() {
             >
               {loading ? "Updating" : "Update"}
             </button>
+            <Link
+              to={"/create-listing"}
+              className="bg-green-700 py-2 px-6 h-12 rounded-md text-white flex items-center justify-center"
+            >
+              Create new listing
+            </Link>
           </form>
           <div className="flex items-center justify-between gap-4">
             <span
