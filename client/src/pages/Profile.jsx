@@ -134,6 +134,21 @@ export default function Profile() {
     }
   };
 
+  const handleListingDelete = async (id) => {
+    try {
+      const res = await fetch(`/api/listing/delete/${id}`, {
+        method: "DELETE",
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        console.log(data.message);
+      }
+      setListings((prev) => prev.filter((listing) => listing._id !== id));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <section className="w-full min-h-[calc(100vh-64px)] bg-[#F7F7F7] py-10">
       <div className="max-w-6xl mx-auto w-full p-4 flex gap-8">
@@ -251,7 +266,7 @@ export default function Profile() {
                     </div>
                   </Link>
                   <div className="flex items-center gap-3">
-                    <button className="">
+                    <button onClick={() => handleListingDelete(listing._id)}>
                       <svg
                         className="w-[22px] h-[22px] text-red-500"
                         aria-hidden="true"

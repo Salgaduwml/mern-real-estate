@@ -1,7 +1,10 @@
 import express from "express";
-import { updateUser, deleteUser } from "../controllers/user.controller.js";
+import {
+  updateUser,
+  deleteUser,
+  getUserListings,
+} from "../controllers/user.controller.js";
 import { verifyToken } from "../utils/verifyToken.js";
-import { getUserListings } from "../controllers/listing.controller.js";
 
 const router = express.Router();
 
