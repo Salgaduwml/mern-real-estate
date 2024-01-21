@@ -7,12 +7,16 @@ import "swiper/css/bundle";
 import { FaBath, FaParking, FaChair } from "react-icons/fa";
 import { FaLocationDot } from "react-icons/fa6";
 import { IoIosBed } from "react-icons/io";
+import { useSelector } from "react-redux";
 
 const Listing = () => {
   const [listing, setListing] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const params = useParams();
+
+  const { currentUser } = useSelector((state) => state.user);
+
   const listingId = params.id;
 
   useEffect(() => {
@@ -121,11 +125,13 @@ const Listing = () => {
                 </ul>
               </div>
               <div className="basis-1/3">
-                <div className="bg-green-700/5 rounded w-full p-4 border">
-                  <button className="bg-green-800 text-white font-tenor font-normal w-full p-2.5 rounded">
-                    Contact Landload
-                  </button>
-                </div>
+                {listing && currentUser._id !== listing.userRef && (
+                  <div className="bg-green-700/5 rounded w-full p-4 border">
+                    <button className="bg-green-800 text-white font-tenor font-normal w-full p-2.5 rounded">
+                      Contact Landload
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
           </div>
