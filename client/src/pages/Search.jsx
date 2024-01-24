@@ -1,9 +1,104 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 const Search = () => {
+  const [sidebarData, setSidebarData] = useState({
+    searchTerm: "",
+    type: "all",
+    parking: false,
+    furnished: false,
+    offer: false,
+    sort: "created_at",
+    order: "desc",
+  });
+  const [loading, setLoading] = useState(false);
+  const [listings, setListings] = useState([]);
+
+  const navigate = useNavigate();
+  console.log(listings);
+  useEffect(() => {
+    const urlParams = new URLSearchParams(location.search);
+    const searchTermFromUrl = urlParams.get("searchTerm");
+    const typeFromUrl = urlParams.get("type");
+    const parkingFromUrl = urlParams.get("parking");
+    const furnishedFromUrl = urlParams.get("furnished");
+    const offerFromUrl = urlParams.get("offer");
+    const sortFromUrl = urlParams.get("sort");
+    const orderFromUrl = urlParams.get("order");
+
+    if (
+      searchTermFromUrl ||
+      typeFromUrl ||
+      parkingFromUrl ||
+      furnishedFromUrl ||
+      offerFromUrl ||
+      sortFromUrl ||
+      orderFromUrl
+    ) {
+      setSidebarData({
+        searchTerm: searchTermFromUrl || "",
+        type: typeFromUrl || "all",
+        parking: parkingFromUrl === "true" ? true : false,
+        furnished: furnishedFromUrl === "true" ? true : false,
+        offer: offerFromUrl === "true" ? true : false,
+        sort: sortFromUrl || "created_at",
+        order: orderFromUrl || "desc",
+      });
+    }
+
+    const fetchListing = async () => {
+      setLoading(true);
+      const searchQuery = urlParams.toString();
+      const res = await fetch(`/api/listing?${searchQuery}`);
+      const data = await res.json();
+      setLoading(false);
+      setListings(data);
+    };
+
+    fetchListing();
+  }, [location.search]);
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    if (id === "all" || id === "rent" || id === "sale") {
+      setSidebarData((prev) => ({ ...prev, type: id }));
+    }
+    if (id === "parking" || id === "furnished" || id === "offer") {
+      setSidebarData((prev) => ({
+        ...prev,
+        [id]: e.target.checked || e.target.checked === "true" ? true : false,
+      }));
+    }
+    if (id === "searchTerm") {
+      setSidebarData((prev) => ({ ...prev, searchTerm: value }));
+    }
+    if (id === "sort_order") {
+      const sort = value.split("_")[0] || "created_at";
+      const order = value.split("_")[1] || "desc";
+      setSidebarData((prev) => ({ ...prev, sort, order }));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const urlParams = new URLSearchParams();
+    urlParams.set("searchTerm", sidebarData.searchTerm);
+    urlParams.set("type", sidebarData.type);
+    urlParams.set("parking", sidebarData.parking);
+    urlParams.set("furnished", sidebarData.furnished);
+    urlParams.set("offer", sidebarData.offer);
+    urlParams.set("sort", sidebarData.sort);
+    urlParams.set("order", sidebarData.order);
+    const searchQuery = urlParams.toString();
+
+    navigate(`/search?${searchQuery}`);
+  };
+
   return (
     <section className="max-w-screen-2xl py-16 px-12">
       <div className="w-full flex gap-16">
         <div className="w-1/4">
-          <form className="flex flex-col gap-6">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-6">
             <div>
               <label htmlFor="searchTerm" className="font-medium">
                 Search:
@@ -13,30 +108,56 @@ const Search = () => {
                 id="searchTerm"
                 placeholder="Search"
                 className="px-4 py-2 border border-black/30 rounded w-full placeholder:text-sm mt-1 "
+                onChange={handleChange}
+                value={sidebarData.searchTerm}
               />
             </div>
             <div>
               <p className="font-medium">Type:</p>
               <div className="flex items-center gap-3 mt-2">
-                <input type="checkbox" id="all" className="w-4 h-4" />
+                <input
+                  type="checkbox"
+                  id="all"
+                  className="w-4 h-4"
+                  onChange={handleChange}
+                  checked={sidebarData.type === "all"}
+                />
                 <label htmlFor="all" className="text-sm mt-0.5">
                   Rent & sale
                 </label>
               </div>
               <div className="flex items-center gap-3 mt-2">
-                <input type="checkbox" id="rent" className="w-4 h-4" />
+                <input
+                  type="checkbox"
+                  id="rent"
+                  className="w-4 h-4"
+                  onChange={handleChange}
+                  checked={sidebarData.type === "rent"}
+                />
                 <label htmlFor="rent" className="text-sm mt-0.5">
                   Rent
                 </label>
               </div>
               <div className="flex items-center gap-3 mt-2">
-                <input type="checkbox" id="sale" className="w-4 h-4" />
+                <input
+                  type="checkbox"
+                  id="sale"
+                  className="w-4 h-4"
+                  onChange={handleChange}
+                  checked={sidebarData.type === "sale"}
+                />
                 <label htmlFor="sale" className="text-sm mt-0.5">
                   Sale
                 </label>
               </div>
               <div className="flex items-center gap-3 mt-2">
-                <input type="checkbox" id="offer" className="w-4 h-4" />
+                <input
+                  type="checkbox"
+                  id="offer"
+                  className="w-4 h-4"
+                  onChange={handleChange}
+                  checked={sidebarData.offer}
+                />
                 <label htmlFor="offer" className="text-sm mt-0.5">
                   Offer
                 </label>
@@ -45,13 +166,25 @@ const Search = () => {
             <div>
               <p className="font-medium">Amenities:</p>
               <div className="flex items-center gap-3 mt-2">
-                <input type="checkbox" id="all" className="w-4 h-4" />
+                <input
+                  type="checkbox"
+                  id="parking"
+                  className="w-4 h-4"
+                  onChange={handleChange}
+                  checked={sidebarData.parking}
+                />
                 <label htmlFor="parking" className="text-sm mt-0.5">
                   Parking
                 </label>
               </div>
               <div className="flex items-center gap-3 mt-2">
-                <input type="checkbox" id="furnished" className="w-4 h-4" />
+                <input
+                  type="checkbox"
+                  id="furnished"
+                  className="w-4 h-4"
+                  onChange={handleChange}
+                  checked={sidebarData.furnished}
+                />
                 <label htmlFor="furnished" className="text-sm mt-0.5">
                   Furnished
                 </label>
@@ -62,14 +195,18 @@ const Search = () => {
               <select
                 id="sort_order"
                 className="bg-white px-4 py-2 border border-black/30 rounded w-full text-sm mt-2"
+                onChange={handleChange}
               >
-                <option value="">Price low to high</option>
-                <option value="">Price high to low</option>
-                <option value="">Latest</option>
-                <option value="">Oldest</option>
+                <option value="regularPrice_desc">Price high to low</option>
+                <option value="regularPrice_asc">Price low to high</option>
+                <option value="createdAt_desc">Latest</option>
+                <option value="createdAt_asc">Oldest</option>
               </select>
             </div>
-            <button className="w-full bg-slate-700 px-6 py-2.5 rounded text-white">
+            <button
+              type="submit"
+              className="w-full bg-slate-700 px-6 py-2.5 rounded text-white"
+            >
               Search
             </button>
           </form>
