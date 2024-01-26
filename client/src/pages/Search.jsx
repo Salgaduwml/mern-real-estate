@@ -14,6 +14,7 @@ const Search = () => {
   });
   const [loading, setLoading] = useState(false);
   const [listings, setListings] = useState([]);
+  const [showMore, setShowMore] = useState(false);
 
   const navigate = useNavigate();
 
@@ -49,11 +50,17 @@ const Search = () => {
 
     const fetchListing = async () => {
       setLoading(true);
+
       const searchQuery = urlParams.toString();
       const res = await fetch(`/api/listing?${searchQuery}`);
       const data = await res.json();
       setLoading(false);
       setListings(data);
+      if (data.length > 8) {
+        setShowMore(true);
+      } else {
+        setShowMore(false);
+      }
     };
 
     fetchListing();
@@ -93,6 +100,23 @@ const Search = () => {
     const searchQuery = urlParams.toString();
 
     navigate(`/search?${searchQuery}`);
+  };
+
+  const onShowMoreClick = async () => {
+    const numOfListigs = listings.length;
+    const startIndex = numOfListigs;
+    const urlParams = new URLSearchParams(location.search);
+    urlParams.set("startIndex", startIndex);
+    const searchQuery = urlParams.toString();
+
+    const res = await fetch(`/api/listing?${searchQuery}`);
+    const data = await res.json();
+    if (data.length > 9) {
+      setShowMore(true);
+    } else {
+      setShowMore(false);
+    }
+    setListings([...listings, ...data]);
   };
 
   return (
@@ -219,11 +243,21 @@ const Search = () => {
               <p className="text-lg font-medium">No listing found...!</p>
             </div>
           ) : (
-            <div className="flex flex-wrap gap-6">
-              {listings.map((listing) => (
-                <ListingItem key={listing._id} listing={listing} />
-              ))}
-            </div>
+            <>
+              <div className="flex flex-wrap gap-6">
+                {listings.map((listing) => (
+                  <ListingItem key={listing._id} listing={listing} />
+                ))}
+              </div>
+              {showMore && (
+                <button
+                  className="text-green-600 font-semibold text-sm mt-6"
+                  onClick={onShowMoreClick}
+                >
+                  Show more
+                </button>
+              )}
+            </>
           )}
         </div>
       </div>
