@@ -125,7 +125,7 @@ const Listing = () => {
                 </ul>
               </div>
               <div className="basis-1/3">
-                {listing && currentUser._id !== listing.userRef && (
+                {listing && currentUser?._id !== listing.userRef && (
                   <div className="bg-green-700/5 rounded w-full p-4 border">
                     <button className="bg-green-800 text-white font-tenor font-normal w-full p-2.5 rounded">
                       Contact Landload
