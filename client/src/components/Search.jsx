@@ -24,10 +24,11 @@ export const Search = () => {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-slate-100 rounded-full flex items-center pl-3 w-full"
+      className="bg-white rounded-full flex items-center pl-3 w-full"
     >
       <input
         type="text"
+        required
         placeholder="Search..."
         className="bg-transparent focus:outline-none outline-none focus:ring-0 border-none w-full"
         value={searchTerm}

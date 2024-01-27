@@ -1,30 +1,8 @@
-import { AiOutlineSearch } from "react-icons/ai";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { useEffect, useState } from "react";
-import { Search } from "./Search";
 
 export default function Header() {
-  const [searchTerm, setSearchTerm] = useState("");
   const { currentUser } = useSelector((state) => state.user);
-
-  const navigate = useNavigate();
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set("searchTerm", searchTerm);
-    const searchQuery = urlParams.toString();
-    navigate(`/search?${searchQuery}`);
-  };
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(location.search);
-    const searchTermfromUrl = urlParams.get("searchTerm");
-    if (searchTermfromUrl) {
-      setSearchTerm(searchTermfromUrl);
-    }
-  }, [location.search]);
 
   return (
     <header className="bg-white shadow-md">
