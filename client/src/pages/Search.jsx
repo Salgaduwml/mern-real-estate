@@ -244,7 +244,7 @@ const Search = () => {
             </div>
           ) : (
             <>
-              <div className="flex flex-wrap gap-6">
+              <div className="grid grid-cols-3 gap-6">
                 {listings.map((listing) => (
                   <ListingItem key={listing._id} listing={listing} />
                 ))}
