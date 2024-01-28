@@ -150,10 +150,10 @@ export default function Profile() {
   };
 
   return (
-    <section className="w-full min-h-[calc(100vh-64px)] bg-[#F7F7F7] py-10">
-      <div className="max-w-6xl mx-auto w-full p-4 flex gap-8">
+    <section className="w-full min-h-[calc(100vh-64px)] bg-[#F7F7F7] py-5 sm:py-12">
+      <div className="max-w-7xl mx-auto w-full px-5 flex flex-col sm:flex-row gap-8">
         <div className="bg-white w-full max-w-sm border rounded">
-          <div className="mx-auto p-8 flex flex-col gap-4">
+          <div className="mx-auto p-4 py-8 sm:p-8 flex flex-col gap-4">
             <h1 className="text-3xl mb-4 font-tenor text-center">Profile</h1>
 
             <form
@@ -171,7 +171,7 @@ export default function Profile() {
                 src={formData.avatar || currentUser.avatar}
                 alt="Profile"
                 onClick={() => fileRef.current.click()}
-                className="w-24 h-24 object-cover rounded-full cursor-pointer self-center"
+                className="w-24 h-24 object-cover rounded-full cursor-pointer self-center mb-4"
               />
               {uploadError ? (
                 <p className="text-red-500 text-sm">Error uploading image</p>
@@ -217,7 +217,7 @@ export default function Profile() {
               </button>
               <Link
                 to={"/create-listing"}
-                className="bg-green-700 py-2 px-6 h-12 rounded-md text-white flex items-center justify-center"
+                className="bg-red-600 py-2 px-6 h-12 rounded-md text-white flex items-center justify-center"
               >
                 Create new listing
               </Link>
@@ -238,14 +238,14 @@ export default function Profile() {
             </div>
             {error && <p className="text-red-500 text-center">{error}</p>}
             {updateSuccess && (
-              <p className="text-green-600 text-center">
+              <p className="text-green-700 text-center">
                 User is updated successfully!
               </p>
             )}
           </div>
         </div>
 
-        <div className="flex-1 bg-white p-8 border rounded">
+        <div className="flex-1 bg-white p-4 sm:p-8 border rounded">
           {listings.length > 0 ? (
             <ul className="space-y-6">
               {listings.map((listing) => (
@@ -268,7 +268,7 @@ export default function Profile() {
                   <div className="flex items-center gap-3">
                     <button onClick={() => handleListingDelete(listing._id)}>
                       <svg
-                        className="w-[22px] h-[22px] text-red-500"
+                        className="w-[20px] h-[20px] text-red-500"
                         aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
@@ -284,10 +284,10 @@ export default function Profile() {
                       </svg>
                     </button>
                     <Link to={`/update-listing/${listing._id}`}>
-                      <button>
+                      <button className="mt-2">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
-                          className="w-5 h-5"
+                          className="w-4 h-4"
                           fill="#909090"
                           data-name="Layer 1"
                           viewBox="0 0 24 24"
