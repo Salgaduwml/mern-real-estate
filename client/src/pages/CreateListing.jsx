@@ -143,15 +143,15 @@ export default function CreateListing() {
   console.log(formData);
   return (
     <main>
-      <div className="max-w-6xl mx-auto w-full p-4 ">
+      <div className="max-w-7xl mx-auto w-full px-5 py-12 sm:py-20 ">
         <h1 className="text-3xl mb-4 font-tenor text-center">
           Create a Listing
         </h1>
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col sm:flex-row gap-12"
+          className="flex flex-col sm:flex-row gap-12 mt-12"
         >
-          <div className="flex flex-col gap-4 flex-1">
+          <div className="flex flex-col gap-6 flex-1">
             <input
               type="text"
               id="name"
@@ -168,6 +168,7 @@ export default function CreateListing() {
               id="description"
               required
               placeholder="Description"
+              rows="3"
               className="px-4 py-2 border border-black/30 rounded w-full placeholder:text-sm"
               onChange={handleChange}
               value={formData.description}
@@ -243,7 +244,7 @@ export default function CreateListing() {
                   min="1"
                   max="10"
                   required
-                  className="pl-3 py-2 border border-black/30 rounded w-12"
+                  className="pl-3 py-2 border border-black/30 rounded w-16"
                   onChange={handleChange}
                   value={formData.bedrooms}
                 />
@@ -256,7 +257,7 @@ export default function CreateListing() {
                   min="1"
                   max="10"
                   required
-                  className="pl-3 py-2 border border-black/30 rounded w-12"
+                  className="pl-3 py-2 border border-black/30 rounded w-16"
                   onChange={handleChange}
                   value={formData.bathrooms}
                 />
@@ -353,7 +354,7 @@ export default function CreateListing() {
             )}
             <button
               disabled={loading || uploading}
-              className="py-2 px-6 w-full bg-blue-500 text-white mt-4 h-12 rounded"
+              className="py-2 px-6 w-full bg-green-600 text-white mt-4 h-12 rounded"
             >
               {loading ? "Creating..." : "Create listing"}
             </button>
