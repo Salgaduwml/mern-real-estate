@@ -8,7 +8,7 @@ export default function Header() {
     <header className="bg-white shadow-md">
       <div className="flex justify-between items-center max-w-7xl px-5 py-3 mx-auto">
         <Link to="/">
-          <h1 className="font-tenor text-red-600 text-3xl flex">
+          <h1 className="font-tenor text-red-600 text-2xl sm:text-3xl flex">
             Realtor <span className="text-black">Gate</span>
           </h1>
         </Link>
