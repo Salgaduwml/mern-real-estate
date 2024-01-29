@@ -6,6 +6,7 @@ dotenv.config();
 import userRoute from "./routes/user.route.js";
 import authRoute from "./routes/auth.route.js";
 import listingRoute from "./routes/listing.route.js";
+import path from "path";
 
 const app = express();
 app.use(express.json());
@@ -20,6 +21,8 @@ mongoose
     console.log(err);
   });
 
+const __dirname = path.resolve();
+
 app.listen(3000, () => {
   console.log("Server is running on port 3000");
 });
@@ -27,6 +30,11 @@ app.listen(3000, () => {
 app.use("/api/user", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/listing", listingRoute);
+
+app.use(express.static(path.join(__dirname, "/client/dist")));
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+});
 
 app.use((err, req, res, next) => {
   const statusCode = err.statusCode || 500;
